@@ -3,54 +3,1120 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="RFP 맞춤형 목차 & 1~2페이지 요약 설계 서비스 - Proposal Overview">
+  <meta name="description" content="수십 페이지 RFP를 1~2페이지 요약 및 우리 회사 맞춤형 제안서 작성 가이드로 자동 생성하는 AI 서비스">
   <title>Proposal Overview - RFP 맞춤형 요약 & 제안서 작성 가이드</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 50%, #020617 100%);
+      --surface-card: rgba(30, 41, 59, 0.7);
+      --surface-card-hover: rgba(51, 65, 85, 0.8);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(99, 102, 241, 0.6);
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --accent-cyan: #38bdf8;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.2);
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
+
     body {
       font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
       min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Background Ambient Glow */
+    .ambient-glow {
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(56, 189, 248, 0.08) 40%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Container */
+    .app-container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 5rem;
+    }
+
+    /* Header */
+    header.nav-header {
       display: flex;
-      flex-direction: column;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      color: #f8fafc;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 3rem;
     }
-    .container {
-      text-align: center;
-      padding: 2.5rem;
-      border-radius: 1.25rem;
-      background: rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    }
-    h1 {
-      font-size: 2.5rem;
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-main);
       font-weight: 700;
-      background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-cyan) 100%);
+      color: white;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    }
+
+    .header-links {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--accent-emerald);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      box-shadow: 0 0 8px var(--accent-emerald);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    /* Hero Section */
+    .hero-section {
+      text-align: center;
+      max-width: 840px;
+      margin: 0 auto 3.5rem;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-title {
+      font-size: 2.75rem;
+      font-weight: 800;
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 0.75rem;
     }
-    p {
-      color: #94a3b8;
+
+    .hero-title span.highlight {
+      background: linear-gradient(135deg, var(--accent-cyan) 0%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* Grid Layout */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.75rem;
+      align-items: stretch;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .workspace-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-title {
+        font-size: 2rem;
+      }
+    }
+
+    /* Form Cards */
+    .card {
+      background: var(--surface-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(255, 255, 255, 0.14);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .card-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+
+    /* Upload Zone */
+    .upload-zone {
+      border: 2px dashed rgba(99, 102, 241, 0.35);
+      border-radius: var(--radius-md);
+      background: rgba(15, 23, 42, 0.4);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 240px;
+      flex: 1;
+    }
+
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--accent-cyan);
+      background: rgba(99, 102, 241, 0.08);
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.15);
+    }
+
+    .upload-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      font-size: 1.75rem;
+      transition: transform 0.2s ease;
+    }
+
+    .upload-zone:hover .upload-icon {
+      transform: translateY(-4px);
+    }
+
+    .upload-instruction {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+      color: var(--text-main);
+    }
+
+    .upload-hint {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+    }
+
+    #file-input {
+      display: none;
+    }
+
+    /* Selected File Preview */
+    .file-preview {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: var(--radius-md);
+      margin-top: 1rem;
+    }
+
+    .file-preview.active {
+      display: flex;
+    }
+
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .file-badge {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .file-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+      max-width: 260px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-size {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    .btn-remove-file {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
       font-size: 1.1rem;
+      padding: 0.3rem;
+      border-radius: var(--radius-sm);
+      transition: color 0.2s;
+    }
+
+    .btn-remove-file:hover {
+      color: #ef4444;
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 0.5rem;
+    }
+
+    label span.required {
+      color: #f43f5e;
+      margin-left: 2px;
+    }
+
+    label span.helper {
+      font-weight: 400;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-left: 6px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    /* Preset Helper Buttons */
+    .preset-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+
+    .btn-preset {
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      color: #a5b4fc;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-preset:hover {
+      background: rgba(99, 102, 241, 0.25);
+      color: #ffffff;
+    }
+
+    /* Submit Section */
+    .submit-section {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      box-shadow: var(--shadow-glow);
+    }
+
+    @media (max-width: 768px) {
+      .submit-section {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    .submit-info h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.25rem;
+    }
+
+    .submit-info p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%);
+      color: white;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.55);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Progress & Output State Modal/Panel */
+    .analysis-panel {
+      display: none;
+      margin-top: 2.5rem;
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .progress-tracker {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    @media (max-width: 700px) {
+      .progress-tracker {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border-subtle);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .progress-step.active {
+      border-color: var(--primary);
+      background: rgba(99, 102, 241, 0.1);
+      box-shadow: 0 0 16px rgba(99, 102, 241, 0.2);
+    }
+
+    .progress-step.done {
+      border-color: var(--accent-emerald);
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    .step-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-dim);
+    }
+
+    .progress-step.active .step-icon {
+      background: var(--primary);
+      color: white;
+      animation: pulse 1.5s infinite;
+    }
+
+    .progress-step.done .step-icon {
+      background: var(--accent-emerald);
+      color: white;
+    }
+
+    .step-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .progress-step.active .step-label {
+      color: var(--text-main);
+    }
+
+    /* Output Tabs & Viewer */
+    .output-viewer {
+      display: none;
+    }
+
+    .output-viewer.ready {
+      display: block;
+    }
+
+    .tabs-header {
+      display: flex;
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 1.5rem;
+    }
+
+    .tab-btn {
+      padding: 0.75rem 1.25rem;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+    }
+
+    .tab-btn.active {
+      color: var(--accent-cyan);
+      border-bottom-color: var(--accent-cyan);
+    }
+
+    .tab-content {
+      display: none;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .report-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-cyan);
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 1.5rem 0 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title:first-of-type {
+      margin-top: 0;
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+    }
+
+    .matrix-table th, .matrix-table td {
+      border: 1px solid var(--border-subtle);
+      padding: 0.75rem 1rem;
+      text-align: left;
+    }
+
+    .matrix-table th {
+      background: rgba(30, 41, 59, 0.8);
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .matrix-table td {
+      background: rgba(15, 23, 42, 0.4);
+      color: var(--text-muted);
+    }
+
+    /* Footer */
+    footer.app-footer {
+      text-align: center;
+      margin-top: 4rem;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 2rem;
     }
   </style>
 </head>
 <body>
-  <main class="container">
-    <h1 id="main-title">Hello World</h1>
-    <p>Proposal Overview 메인 화면 준비 중입니다.</p>
-  </main>
+  <div class="ambient-glow"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="nav-header">
+      <a href="/" class="brand-logo" id="logo-link">
+        <span class="logo-badge">📋</span>
+        <span>Proposal Overview</span>
+      </a>
+      <div class="header-links">
+        <span class="status-badge">
+          <span class="status-dot"></span>
+          AI Engine Ready
+        </span>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero-section">
+      <div class="hero-tag">🚀 초기 스타트업을 위한 정부지원사업 & 입찰 제안 솔루션</div>
+      <h1 class="hero-title">
+        수십 페이지 RFP를 <span class="highlight">1~2페이지 핵심 요약</span>과<br>
+        우리 회사 <span class="highlight">맞춤형 제안서 가이드</span>로
+      </h1>
+      <p class="hero-desc">
+        제안요청서(RFP) PDF를 업로드하고 기업 역량을 입력하세요. AI 컨설턴트가 핵심 요구사항과 평가 기준을 분석하고, 귀사만의 차별화된 제안서 목차와 작성 전략을 설계하여 이메일로 전송합니다.
+      </p>
+    </section>
+
+    <!-- Form Workspace -->
+    <form id="proposal-form" onsubmit="handleFormSubmit(event)">
+      <div class="workspace-grid">
+        
+        <!-- Step 1: PDF Upload Card -->
+        <div class="card" id="step-upload-card">
+          <div class="card-header">
+            <span class="step-number">1</span>
+            <div>
+              <h2 class="card-title">RFP PDF 업로드</h2>
+              <p class="card-subtitle">분석할 공고문 또는 제안요청서(PDF)를 등록하세요.</p>
+            </div>
+          </div>
+
+          <div class="upload-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+            <div class="upload-icon">📄</div>
+            <div class="upload-instruction">RFP PDF 파일을 여기에 끌어다 놓으세요</div>
+            <div class="upload-hint">또는 클릭하여 파일 찾아보기 (최대 50MB)</div>
+            <input type="file" id="file-input" accept=".pdf" onchange="handleFileSelect(event)">
+          </div>
+
+          <div class="file-preview" id="file-preview">
+            <div class="file-info">
+              <span class="file-badge">PDF</span>
+              <div>
+                <div class="file-name" id="preview-file-name">RFP_example.pdf</div>
+                <div class="file-size" id="preview-file-size">2.4 MB</div>
+              </div>
+            </div>
+            <button type="button" class="btn-remove-file" onclick="removeSelectedFile()" title="파일 제거">✕</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Company Info Card -->
+        <div class="card" id="step-company-card">
+          <div class="card-header">
+            <span class="step-number">2</span>
+            <div>
+              <h2 class="card-title">회사 정보 & 역량 입력</h2>
+              <p class="card-subtitle">AI가 제안서 목차와 작성 가이드를 맞춤 매핑합니다.</p>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="company-name">회사명 <span class="required">*</span></label>
+              <input type="text" id="company-name" placeholder="예: (주)알파솔루션" required>
+            </div>
+            <div class="form-group">
+              <label for="user-email">수신 이메일 주소 <span class="required">*</span></label>
+              <input type="email" id="user-email" placeholder="ceo@alphasolution.com" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="company-domain">주요 사업 분야 / 업종</label>
+            <select id="company-domain">
+              <option value="it_saas">IT / SaaS / 인공지능(AI)</option>
+              <option value="fintech">핀테크 / 블록체인</option>
+              <option value="bio_health">바이오 / 헬스케어</option>
+              <option value="manufacturing">제조 / 하드웨어 / 로봇</option>
+              <option value="contents">콘텐츠 / 커머스 / 플랫폼</option>
+              <option value="other">기타 전문 서비스</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="flex: 1; display: flex; flex-direction: column;">
+            <label for="company-narrative">
+              회사 역량 및 소개 문장 <span class="required">*</span>
+              <span class="helper">(AI가 분석하여 제안서 목차에 매핑할 핵심 문장)</span>
+            </label>
+            <textarea 
+              id="company-narrative" 
+              placeholder="회사의 강점이나, 주요 기술, 핵심 인력, 유사 프로젝트 수행 실적 등을 자유로운 문장 형태로 입력해주세요.&#10;&#10;예시: 당사는 5년 이상의 금융권 분산원장 및 클라우드 아키텍처 구축 경험을 보유하고 있으며, 10인 이상의 풀스택 엔지니어와 함께 MSA 기반 고성능 API 플랫폼을 개발했습니다. 본 입찰과 유사한 공공기관 시스템 구축 실적 3건을 보유하고 있습니다."
+              required
+              style="flex: 1;"
+            ></textarea>
+            
+            <div class="preset-toolbar">
+              <span style="font-size: 0.78rem; color: var(--text-dim);">입력이 고민되시나요?</span>
+              <button type="button" class="btn-preset" onclick="fillSampleCompanyInfo()">✨ 예시 데이터 채우기</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Bar -->
+      <div class="submit-section">
+        <div class="submit-info">
+          <h3>RFP 분석 및 맞춤형 가이드 생성</h3>
+          <p>AI가 제안요청서의 평가 기준을 파악하고 귀사에 최적화된 1~2페이지 요약 & 목차 가이드를 만듭니다.</p>
+        </div>
+        <button type="submit" class="btn-primary" id="btn-submit">
+          <span>🚀 분석 및 가이드 생성 시작</span>
+        </button>
+      </div>
+    </form>
+
+    <!-- Progress & Output Area -->
+    <div class="analysis-panel" id="analysis-panel">
+      <div class="progress-tracker">
+        <div class="progress-step" id="step-progress-1">
+          <div class="step-icon">1</div>
+          <div class="step-label">PDF 파싱 & 추출</div>
+        </div>
+        <div class="progress-step" id="step-progress-2">
+          <div class="step-icon">2</div>
+          <div class="step-label">RFP 핵심 요약 생성</div>
+        </div>
+        <div class="progress-step" id="step-progress-3">
+          <div class="step-icon">3</div>
+          <div class="step-label">기업 강점 매핑 가이드</div>
+        </div>
+        <div class="progress-step" id="step-progress-4">
+          <div class="step-icon">4</div>
+          <div class="step-label">이메일 전달 완료</div>
+        </div>
+      </div>
+
+      <!-- Output Viewers -->
+      <div class="output-viewer" id="output-viewer">
+        <div class="tabs-header">
+          <button type="button" class="tab-btn active" onclick="switchTab('tab-summary')">📄 1차 산출물: RFP 1~2페이지 요약</button>
+          <button type="button" class="tab-btn" onclick="switchTab('tab-guide')">🎯 2차 산출물: 맞춤형 제안서 작성 가이드</button>
+        </div>
+
+        <!-- Tab 1: RFP Summary -->
+        <div class="tab-content active" id="tab-summary">
+          <span class="report-badge">1~2 PAGE RFP SUMMARY REPORT</span>
+          <h3 class="section-title">📌 공고 개요 및 핵심 요구사항</h3>
+          <p id="summary-overview">
+            본 사업은 중소벤처기업부 주관 <strong>2026년도 인공지능 기반 스마트 서비스 바우처 지원사업</strong>으로, 데이터 분석 및 LLM 기반 업무 자동화 솔루션 구축 역량을 보유한 공급기업을 모집합니다. 총 사업 예산은 1.5억 원(정부지원금 70%)이며, 8개월 이내에 현업 적용 가능한 상용 솔루션 납품을 목표로 합니다.
+          </p>
+
+          <h3 class="section-title">📊 평가 기준 및 배점 구조</h3>
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>평가 항목</th>
+                <th>배점</th>
+                <th>주요 평가 착안점</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>기술성 및 개발 역량</strong></td>
+                <td>40점</td>
+                <td>AI/LLM 아키텍처 안정성, 데이터 보안 처리 역량, 참여 인력 전문성</td>
+              </tr>
+              <tr>
+                <td><strong>사업성 및 실행 계획</strong></td>
+                <td>30점</td>
+                <td>8개월 내 마일스톤 달성 가능성, 수요기업 연계 시너지, 비용 타당성</td>
+              </tr>
+              <tr>
+                <td><strong>수행 실적 및 조직 역량</strong></td>
+                <td>20점</td>
+                <td>유사 공공/민간 프로젝트 완료 실적, 지식재산권(특허/인증) 보유 현황</td>
+              </tr>
+              <tr>
+                <td><strong>사후 관리 및 확산 계획</strong></td>
+                <td>10점</td>
+                <td>유지보수 SLA 체계, 향후 확장 로드맵</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 class="section-title">⚠️ 필수 자격 요건 & 제출 마감</h3>
+          <ul style="padding-left: 1.5rem; color: var(--text-muted);">
+            <li><strong>제출 마감일:</strong> 2026년 9월 30일(수) 18:00 (전산 접수 마감 엄수)</li>
+            <li><strong>필수 제출 서류:</strong> 사업제안서(30p 이내), 기업신용평가등급확인서, 참여인력 재직증명서</li>
+          </ul>
+        </div>
+
+        <!-- Tab 2: Proposal Guide -->
+        <div class="tab-content" id="tab-guide">
+          <span class="report-badge" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald);">CUSTOM PROPOSAL DRAFTING GUIDE</span>
+          
+          <h3 class="section-title">🎯 귀사 맞춤형 제안서 목차 및 전략 매핑</h3>
+          <p style="color: var(--text-muted); margin-bottom: 1rem;">
+            입력하신 회사 강점(클라우드 분산 아키텍처, MSA 기반 고성능 API, 공공기관 레퍼런스 3건)을 RFP 40점 배점 항목에 집중 배치하도록 최적화된 목차를 구성했습니다.
+          </p>
+
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>제안서 제안 목차</th>
+                <th>RFP 배점 매핑</th>
+                <th>귀사 강점 소구 전략 (Action Guide)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>I. 사업 이해 및 제안 배경</strong></td>
+                <td>사업성 (10점)</td>
+                <td>수요기업의 당면 과제를 정의하고, 귀사의 검증된 아키텍처 도입 시 기대효과 정량 제시</td>
+              </tr>
+              <tr>
+                <td><strong>II. 시스템 아키텍처 및 기술 구현</strong></td>
+                <td>기술성 (40점) ★핵심</td>
+                <td><strong>[자사 강점]</strong> 보유 중인 MSA 고성능 API 플랫폼을 전면에 배치하여 기술 안정성 강조</td>
+              </tr>
+              <tr>
+                <td><strong>III. 사업 수행 계획 및 일정 관리</strong></td>
+                <td>실행력 (20점)</td>
+                <td>8개월 개발 일정을 2주 단위 스프린트로 쪼개어 리스크 사전 통제 방안 어필</td>
+              </tr>
+              <tr>
+                <td><strong>IV. 참여 인력 및 유사 사업 실적</strong></td>
+                <td>조직/실적 (20점) ★핵심</td>
+                <td><strong>[자사 강점]</strong> 10인 이상의 풀스택 핵심 인력 프로필과 공공 구축 실적 3건을 증빙 자료로 첨부</td>
+              </tr>
+              <tr>
+                <td><strong>V. 사후 지원 및 품질 보증</strong></td>
+                <td>사후 관리 (10점)</td>
+                <td>무상 하자보수 1년 및 단계별 기술 이전 교육 계획 수립</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 class="section-title">💡 컨설턴트 원포인트 차별화 팁</h3>
+          <div style="background: rgba(99, 102, 241, 0.12); border-left: 4px solid var(--primary); padding: 1rem 1.25rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; color: #e2e8f0;">
+            심사위원단은 40점 배점의 기술성 항목에서 "실제 납품 후 장애 대응력"을 중요하게 봅니다. II장 시작부에 귀사의 5년 분산원장/클라우드 운영 노하우를 바탕으로 한 <strong>"무장애 SLA 가용성 다이어그램"</strong>을 도식화하여 1페이지 요약 형태로 배치하는 것을 강력히 추천합니다.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>© 2026 Proposal Overview. 초기 스타트업을 위한 맞춤형 RFP 요약 및 제안서 설계 엔진.</p>
+    </footer>
+  </div>
+
+  <script>
+    let selectedFile = null;
+
+    // Drag & Drop Handlers
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.add('drag-over');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.remove('drag-over');
+      });
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer.files;
+      if (files.length > 0 && files[0].type === 'application/pdf') {
+        processFile(files[0]);
+      } else {
+        alert('PDF 파일만 업로드 가능합니다.');
+      }
+    });
+
+    function handleFileSelect(event) {
+      if (event.target.files.length > 0) {
+        processFile(event.target.files[0]);
+      }
+    }
+
+    function processFile(file) {
+      selectedFile = file;
+      document.getElementById('preview-file-name').textContent = file.name;
+      document.getElementById('preview-file-size').textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+      document.getElementById('file-preview').classList.add('active');
+    }
+
+    function removeSelectedFile() {
+      selectedFile = null;
+      fileInput.value = '';
+      document.getElementById('file-preview').classList.remove('active');
+    }
+
+    // Preset Example Filler
+    function fillSampleCompanyInfo() {
+      document.getElementById('company-name').value = '(주)넥스트에이아이 솔루션즈';
+      document.getElementById('user-email').value = 'founder@nextai.io';
+      document.getElementById('company-domain').value = 'it_saas';
+      document.getElementById('company-narrative').value = '당사는 5년 이상의 금융권 및 공공기관 대상 분산원장, LLM 기반 데이터 자동화 플랫폼 구축 경험을 보유한 8년차 기술 스타트업입니다. 12인의 시니어 AI/풀스택 엔지니어팀으로 구성되어 있으며, MSA 기반 고성능 API 파이프라인 개발 특허 2건 및 공공기관 스마트 정보화 사업 구축 실적 3건을 성공적으로 완수한 레퍼런스를 보유하고 있습니다.';
+    }
+
+    // Form Submission & Progress Simulation
+    function handleFormSubmit(event) {
+      event.preventDefault();
+
+      if (!selectedFile) {
+        alert('RFP PDF 파일을 업로드해주세요.');
+        document.getElementById('drop-zone').scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+
+      const btn = document.getElementById('btn-submit');
+      const panel = document.getElementById('analysis-panel');
+      btn.disabled = true;
+      btn.innerHTML = '<span>⚡ AI 분석 및 가이드 생성 중...</span>';
+
+      panel.style.display = 'block';
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Step Progress Simulator
+      const steps = [
+        document.getElementById('step-progress-1'),
+        document.getElementById('step-progress-2'),
+        document.getElementById('step-progress-3'),
+        document.getElementById('step-progress-4')
+      ];
+
+      steps.forEach(s => { s.className = 'progress-step'; });
+
+      // Step 1
+      steps[0].classList.add('active');
+
+      setTimeout(() => {
+        steps[0].classList.remove('active');
+        steps[0].classList.add('done');
+        steps[1].classList.add('active');
+      }, 1000);
+
+      // Step 2
+      setTimeout(() => {
+        steps[1].classList.remove('active');
+        steps[1].classList.add('done');
+        steps[2].classList.add('active');
+      }, 2200);
+
+      // Step 3
+      setTimeout(() => {
+        steps[2].classList.remove('active');
+        steps[2].classList.add('done');
+        steps[3].classList.add('active');
+      }, 3400);
+
+      // Step 4 & Complete
+      setTimeout(() => {
+        steps[3].classList.remove('active');
+        steps[3].classList.add('done');
+        
+        btn.disabled = false;
+        btn.innerHTML = '<span>✅ 분석 완료 (이메일 발송됨)</span>';
+
+        document.getElementById('output-viewer').classList.add('ready');
+      }, 4500);
+    }
+
+    // Output Tabs
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+      if (tabId === 'tab-summary') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.getElementById('tab-summary').classList.add('active');
+      } else {
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.getElementById('tab-guide').classList.add('active');
+      }
+    }
+  </script>
 </body>
 </html>
