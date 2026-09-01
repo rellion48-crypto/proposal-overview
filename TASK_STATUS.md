@@ -14,7 +14,9 @@
 - [x] 메인 인터페이스 index.html 구현 (RFP PDF 업로드존 + 회사 정보 및 문장형 역량 입력 폼 + 실시간 분석 프로그레스 + 1·2차 산출물 뷰어) — 2026-09-01
 - [x] Supabase Google OAuth 연동 & 구글 로그인 시에만 메인 페이지 접근 가능하도록 인증 게이트웨이 구현 (미로그인 시 구글 로그인/회원가입 카드 표출) — 2026-09-01
 - [x] Supabase 데이터베이스 (profiles, rfp_analyses) 및 Storage (rfp-documents) SQL 스키마 설계 및 파일 구성 — 2026-09-01
-- [x] Gemini AI API (`GEMINI_API_KEY`) 및 PDF.js 연동 (실제 RFP PDF 텍스트 파싱 + 1·2차 산출물 실시간 AI 생성 및 Supabase DB 저장) — 2026-09-01
+- [x] Gemini AI API 및 PDF.js 연동 (안전한 Vercel Serverless Function `/api/analyze` 기반 1·2차 산출물 실시간 AI 생성 및 Supabase DB 저장) — 2026-09-01
+- [x] 작성자 성별, 직책 입력 필드 추가 및 회사 정보 전량 데이터베이스 수집 구현 — 2026-09-01
+- [x] 분석 실행 전 개인정보 및 기업정보 수집·이용 동의 확인 절차 및 동의 이력(동의 여부, 동의 시각) 데이터 수집 구현 — 2026-09-01
 
 ---
 

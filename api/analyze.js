@@ -41,6 +41,8 @@ export default async function handler(req, res) {
 
 [신청 기업 정보]
 - 회사명: ${companyInfo.name || ''}
+- 작성자 직책/직급: ${companyInfo.position || '대표이사'}
+- 작성자 성별: ${companyInfo.gender || '미지정'}
 - 주요 분야: ${companyInfo.domain || ''}
 - 기업 핵심 역량 및 강점: ${companyInfo.narrative || ''}
 

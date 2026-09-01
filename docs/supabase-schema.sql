@@ -2,8 +2,8 @@
 -- Proposal-overview : Supabase Database & Storage Setup Schema
 -- 
 -- 기능:
--- 1. 사용자 프로필(profiles) 테이블 및 구글 회원가입 시 자동 연동 트리거
--- 2. RFP 분석 및 제안서 가이드(rfp_analyses) 테이블
+-- 1. 사용자 프로필(profiles) 테이블 (성별, 직책, 회사명 포함)
+-- 2. RFP 분석 및 제안서 가이드(rfp_analyses) 테이블 (성별, 직책, 개인정보동의 포함)
 -- 3. Row Level Security (RLS) 보안 정책 (본인 데이터만 조회/수정/삭제)
 -- 4. RFP PDF 파일 저장을 위한 Supabase Storage 버킷 생성 및 권한 설정
 -- ==============================================================================
@@ -19,10 +19,17 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     email TEXT NOT NULL,
     full_name TEXT,
     avatar_url TEXT,
+    gender TEXT,                            -- 성별 ('male', 'female', 'other', 'unspecified')
+    position TEXT,                          -- 직책/직급 (예: '대표이사(CEO)', '총괄이사', '팀장' 등)
     company_name TEXT,
     created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
+
+-- 기존 profiles 테이블이 이미 있는 경우를 위한 컬럼 추가
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS gender TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS position TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS company_name TEXT;
 
 -- RLS 활성화
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
@@ -80,11 +87,18 @@ CREATE TABLE IF NOT EXISTS public.rfp_analyses (
     file_url TEXT,
     file_size BIGINT,
     
-    -- 사용자 및 기업 입력 정보
-    company_name TEXT NOT NULL,
-    user_email TEXT NOT NULL,
-    company_domain TEXT DEFAULT 'it_saas',
-    company_narrative TEXT NOT NULL,
+    -- 사용자 및 기업 입력 정보 (성별, 직책, 회사정보 전량 수집)
+    user_name TEXT,                         -- 신청자 이름
+    user_email TEXT NOT NULL,               -- 수신 이메일
+    gender TEXT,                            -- 성별 ('male', 'female', 'other', 'unspecified')
+    position TEXT,                          -- 직책/직급 (예: '대표이사(CEO)', '총괄이사', '팀장' 등)
+    company_name TEXT NOT NULL,             -- 회사명
+    company_domain TEXT DEFAULT 'it_saas',  -- 업종/분야
+    company_narrative TEXT NOT NULL,        -- 회사 역량/강점/인력/실적 소개 문장
+    
+    -- 개인정보 수집 및 이용 동의 데이터
+    privacy_agreed BOOLEAN DEFAULT false NOT NULL,  -- 개인정보 수집 및 이용 동의 여부
+    privacy_agreed_at TIMESTAMPTZ,                  -- 개인정보 동의 일시
     
     -- AI 분석 및 산출물 데이터 (JSONB 구조화)
     parsed_text TEXT,                       -- PDF 추출 원문 텍스트
@@ -101,6 +115,13 @@ CREATE TABLE IF NOT EXISTS public.rfp_analyses (
     created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
+
+-- 기존 rfp_analyses 테이블이 이미 있는 경우를 위한 컬럼 추가
+ALTER TABLE public.rfp_analyses ADD COLUMN IF NOT EXISTS user_name TEXT;
+ALTER TABLE public.rfp_analyses ADD COLUMN IF NOT EXISTS gender TEXT;
+ALTER TABLE public.rfp_analyses ADD COLUMN IF NOT EXISTS position TEXT;
+ALTER TABLE public.rfp_analyses ADD COLUMN IF NOT EXISTS privacy_agreed BOOLEAN DEFAULT false;
+ALTER TABLE public.rfp_analyses ADD COLUMN IF NOT EXISTS privacy_agreed_at TIMESTAMPTZ;
 
 -- RLS 활성화
 ALTER TABLE public.rfp_analyses ENABLE ROW LEVEL SECURITY;

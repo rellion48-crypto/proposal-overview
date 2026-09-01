@@ -630,6 +630,79 @@
       color: #ffffff;
     }
 
+    /* Privacy Agreement Section */
+    .privacy-section {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: border-color 0.2s;
+    }
+
+    .privacy-section:hover {
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    .privacy-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .privacy-checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .privacy-checkbox-label input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .btn-toggle-privacy {
+      background: none;
+      border: none;
+      color: #818cf8;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .privacy-details {
+      display: none;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 1rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .privacy-details.open {
+      display: block;
+    }
+
+    .privacy-details ul {
+      margin-left: 1.25rem;
+      margin-top: 0.35rem;
+    }
+
     /* Submit Section */
     .submit-section {
       background: var(--surface-card);
@@ -1028,8 +1101,30 @@
 
             <div class="form-row">
               <div class="form-group">
-                <label for="company-name">회사명 <span class="required">*</span></label>
-                <input type="text" id="company-name" placeholder="예: (주)알파솔루션" required>
+                <label for="user-name">작성자 성명 <span class="required">*</span></label>
+                <input type="text" id="user-name" placeholder="예: 홍길동" required>
+              </div>
+              <div class="form-group">
+                <label for="user-position">직책 / 직무 <span class="required">*</span></label>
+                <select id="user-position" required>
+                  <option value="대표이사(CEO)">대표이사 (CEO)</option>
+                  <option value="총괄이사 / 임원">총괄이사 / 임원 (CXO)</option>
+                  <option value="사업기획 / 제안 총괄 팀장">사업기획 / 제안 총괄 팀장</option>
+                  <option value="기술책임자 / 수석엔지니어">기술책임자 / 수석엔지니어</option>
+                  <option value="실무 기획자 / 담당자">실무 기획자 / 담당자</option>
+                  <option value="기타">기타</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="user-gender">성별</label>
+                <select id="user-gender">
+                  <option value="선택 안 함">선택 안 함</option>
+                  <option value="남성">남성</option>
+                  <option value="여성">여성</option>
+                </select>
               </div>
               <div class="form-group">
                 <label for="user-email">수신 이메일 주소 <span class="required">*</span></label>
@@ -1037,16 +1132,22 @@
               </div>
             </div>
 
-            <div class="form-group">
-              <label for="company-domain">주요 사업 분야 / 업종</label>
-              <select id="company-domain">
-                <option value="IT / SaaS / 인공지능(AI)">IT / SaaS / 인공지능(AI)</option>
-                <option value="핀테크 / 블록체인 / 금융">핀테크 / 블록체인 / 금융</option>
-                <option value="바이오 / 헬스케어 / 의료">바이오 / 헬스케어 / 의료</option>
-                <option value="제조 / 하드웨어 / 로봇 / IoT">제조 / 하드웨어 / 로봇 / IoT</option>
-                <option value="콘텐츠 / 커머스 / 플랫폼">콘텐츠 / 커머스 / 플랫폼</option>
-                <option value="기타 전문 엔지니어링 및 컨설팅">기타 전문 서비스</option>
-              </select>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="company-name">회사명 <span class="required">*</span></label>
+                <input type="text" id="company-name" placeholder="예: (주)알파솔루션" required>
+              </div>
+              <div class="form-group">
+                <label for="company-domain">주요 사업 분야 / 업종</label>
+                <select id="company-domain">
+                  <option value="IT / SaaS / 인공지능(AI)">IT / SaaS / 인공지능(AI)</option>
+                  <option value="핀테크 / 블록체인 / 금융">핀테크 / 블록체인 / 금융</option>
+                  <option value="바이오 / 헬스케어 / 의료">바이오 / 헬스케어 / 의료</option>
+                  <option value="제조 / 하드웨어 / 로봇 / IoT">제조 / 하드웨어 / 로봇 / IoT</option>
+                  <option value="콘텐츠 / 커머스 / 플랫폼">콘텐츠 / 커머스 / 플랫폼</option>
+                  <option value="기타 전문 엔지니어링 및 컨설팅">기타 전문 서비스</option>
+                </select>
+              </div>
             </div>
 
             <div class="form-group" style="flex: 1; display: flex; flex-direction: column;">
@@ -1068,6 +1169,26 @@
             </div>
           </div>
 
+        </div>
+
+        <!-- Privacy Consent Section -->
+        <div class="privacy-section">
+          <div class="privacy-header">
+            <label class="privacy-checkbox-label" for="privacy-agree-check">
+              <input type="checkbox" id="privacy-agree-check" required>
+              <span>[필수] 개인정보 및 기업정보 수집·이용에 동의합니다.</span>
+            </label>
+            <button type="button" class="btn-toggle-privacy" onclick="togglePrivacyDetails()">약관 전문 보기 ▼</button>
+          </div>
+          <div class="privacy-details" id="privacy-details-box">
+            <p><strong>[개인정보 및 기업정보 수집·이용 동의 안내]</strong></p>
+            <ul>
+              <li><strong>수집 항목:</strong> 작성자 성명, 직책, 성별, 수신 이메일 주소, 회사명, 업종, 회사 역량 소개 문장, 업로드된 RFP PDF 문서 데이터</li>
+              <li><strong>수집 및 이용 목적:</strong> AI 기반 RFP 요약 보고서 및 맞춤형 제안서 작성 가이드라인 산출물 생성, 서비스 품질 개선 및 결과 전달</li>
+              <li><strong>보유 및 이용 기간:</strong> 목적 달성 시 또는 회원 탈퇴 요청 시까지 (관련 법령에 따라 최대 1년 보관 후 안전하게 파기)</li>
+              <li>귀하는 개인정보 수집에 거부할 권리가 있으며, 거부 시 서비스 이용이 제한될 수 있습니다.</li>
+            </ul>
+          </div>
         </div>
 
         <!-- Action Bar -->
@@ -1233,6 +1354,7 @@
       const userEmailDisplay = document.getElementById('user-email-display');
       const userAvatarDisplay = document.getElementById('user-avatar-display');
       const userEmailInput = document.getElementById('user-email');
+      const userNameInput = document.getElementById('user-name');
 
       loadingEl.style.display = 'none';
       currentUser = user;
@@ -1247,6 +1369,11 @@
         
         if (userEmailInput && !userEmailInput.value) {
           userEmailInput.value = userEmail;
+        }
+
+        const userFullName = user.user_metadata?.full_name || user.user_metadata?.name || '';
+        if (userNameInput && !userNameInput.value && userFullName) {
+          userNameInput.value = userFullName;
         }
 
         const avatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture;
@@ -1301,7 +1428,7 @@
     window.addEventListener('DOMContentLoaded', initAuth);
 
     // ---------------------------------------------------------
-    // 3. PDF Upload & Parsing
+    // 3. PDF Upload & Form Handlers
     // ---------------------------------------------------------
     let selectedFile = null;
     let extractedPdfText = '';
@@ -1356,10 +1483,19 @@
       document.getElementById('file-preview').classList.remove('active');
     }
 
+    function togglePrivacyDetails() {
+      const box = document.getElementById('privacy-details-box');
+      box.classList.toggle('open');
+    }
+
     function fillSampleCompanyInfo() {
+      document.getElementById('user-name').value = '이영민';
+      document.getElementById('user-position').value = '대표이사(CEO)';
+      document.getElementById('user-gender').value = '남성';
       document.getElementById('company-name').value = '(주)넥스트에이아이 솔루션즈';
       document.getElementById('company-domain').value = 'IT / SaaS / 인공지능(AI)';
       document.getElementById('company-narrative').value = '당사는 5년 이상의 금융권 및 공공기관 대상 분산원장, LLM 기반 데이터 자동화 플랫폼 구축 경험을 보유한 8년차 기술 스타트업입니다. 12인의 시니어 AI/풀스택 엔지니어팀으로 구성되어 있으며, MSA 기반 고성능 API 파이프라인 개발 특허 2건 및 공공기관 스마트 정보화 사업 구축 실적 3건을 성공적으로 완수한 레퍼런스를 보유하고 있습니다.';
+      document.getElementById('privacy-agree-check').checked = true;
     }
 
     // PDF Text Extraction using pdf.js
@@ -1405,7 +1541,7 @@
     }
 
     // ---------------------------------------------------------
-    // 5. Form Submit & Real Workflow
+    // 5. Form Submit & All Data Collection Workflow
     // ---------------------------------------------------------
     async function handleFormSubmit(event) {
       event.preventDefault();
@@ -1416,10 +1552,24 @@
         return;
       }
 
-      const companyName = document.getElementById('company-name').value.trim();
+      // 개인정보 수집 및 이용 동의 확인
+      const privacyCheck = document.getElementById('privacy-agree-check');
+      if (!privacyCheck.checked) {
+        alert('개인정보 및 기업정보 수집·이용에 동의해주셔야 분석을 진행할 수 있습니다.');
+        privacyCheck.focus();
+        document.getElementById('privacy-details-box').classList.add('open');
+        return;
+      }
+
+      // 전체 입력란 데이터 수집
+      const userName = document.getElementById('user-name').value.trim();
+      const userPosition = document.getElementById('user-position').value;
+      const userGender = document.getElementById('user-gender').value;
       const userEmail = document.getElementById('user-email').value.trim();
+      const companyName = document.getElementById('company-name').value.trim();
       const companyDomain = document.getElementById('company-domain').value;
       const companyNarrative = document.getElementById('company-narrative').value.trim();
+      const privacyAgreedAt = new Date().toISOString();
 
       const btn = document.getElementById('btn-submit');
       const panel = document.getElementById('analysis-panel');
@@ -1450,6 +1600,9 @@
         const companyInfo = {
           name: companyName,
           email: userEmail,
+          userName: userName,
+          position: userPosition,
+          gender: userGender,
           domain: companyDomain,
           narrative: companyNarrative
         };
@@ -1467,24 +1620,40 @@
         steps[2].classList.add('done');
         steps[3].classList.add('active');
 
-        // Save to Supabase DB (rfp_analyses) if user is logged in
+        // Save All Collected Data to Supabase DB (rfp_analyses & profiles)
         if (supabaseClient && currentUser) {
           try {
+            // 1) rfp_analyses 테이블에 전량 수집/저장
             await supabaseClient.from('rfp_analyses').insert({
               user_id: currentUser.id,
               file_name: selectedFile.name,
               file_size: selectedFile.size,
-              company_name: companyName,
+              user_name: userName,
               user_email: userEmail,
+              gender: userGender,
+              position: userPosition,
+              company_name: companyName,
               company_domain: companyDomain,
               company_narrative: companyNarrative,
+              privacy_agreed: true,
+              privacy_agreed_at: privacyAgreedAt,
               parsed_text: extractedPdfText.substring(0, 10000),
               summary_report: aiResponse.summaryReport,
               proposal_guide: aiResponse.proposalGuide,
               status: 'completed'
             });
+
+            // 2) profiles 테이블 프로필 정보 동기화 업데이트
+            await supabaseClient.from('profiles').update({
+              full_name: userName,
+              gender: userGender,
+              position: userPosition,
+              company_name: companyName,
+              updated_at: privacyAgreedAt
+            }).eq('id', currentUser.id);
+
           } catch (dbErr) {
-            console.warn('Supabase DB Insert note:', dbErr);
+            console.warn('Supabase DB Insert/Update notice:', dbErr);
           }
         }
 
