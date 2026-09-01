@@ -13,6 +13,9 @@
   
   <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- PDF.js for Client-side Fast PDF Text Parsing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
   <style>
     :root {
@@ -295,7 +298,7 @@
     }
 
     /* =========================================================
-       2. MAIN APP VIEW (로그인 성공 시 표출)
+       2. MAIN APP VIEW (로그인 완료 시 표출)
        ========================================================= */
     #main-app-view {
       display: none;
@@ -783,6 +786,7 @@
       gap: 0.75rem;
       border-bottom: 1px solid var(--border-subtle);
       margin-bottom: 1.5rem;
+      flex-wrap: wrap;
     }
 
     .tab-btn {
@@ -814,7 +818,7 @@
       padding: 2rem;
       font-size: 0.95rem;
       line-height: 1.8;
-      max-height: 500px;
+      max-height: 550px;
       overflow-y: auto;
     }
 
@@ -834,7 +838,7 @@
     }
 
     .section-title {
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       font-weight: 700;
       color: #ffffff;
       margin: 1.5rem 0 0.75rem;
@@ -869,6 +873,15 @@
     .matrix-table td {
       background: rgba(15, 23, 42, 0.4);
       color: var(--text-muted);
+    }
+
+    .consultant-box {
+      background: rgba(99, 102, 241, 0.12);
+      border-left: 4px solid var(--primary);
+      padding: 1.25rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      color: #e2e8f0;
+      line-height: 1.7;
     }
 
     /* Footer */
@@ -966,7 +979,7 @@
           우리 회사 <span class="highlight">맞춤형 제안서 가이드</span>로
         </h1>
         <p class="hero-desc">
-          제안요청서(RFP) PDF를 업로드하고 기업 역량을 입력하세요. AI 컨설턴트가 핵심 요구사항과 평가 기준을 분석하고, 귀사만의 차별화된 제안서 목차와 작성 전략을 설계하여 이메일로 전송합니다.
+          제안요청서(RFP) PDF를 업로드하고 기업 역량을 입력하세요. Google Gemini AI가 핵심 요구사항과 평가 기준을 분석하고, 귀사만의 차별화된 제안서 목차와 작성 전략을 설계하여 제공합니다.
         </p>
       </section>
 
@@ -1009,7 +1022,7 @@
               <span class="step-number">2</span>
               <div>
                 <h2 class="card-title">회사 정보 & 역량 입력</h2>
-                <p class="card-subtitle">AI가 제안서 목차와 작성 가이드를 맞춤 매핑합니다.</p>
+                <p class="card-subtitle">Gemini AI가 제안서 목차와 작성 가이드를 맞춤 매핑합니다.</p>
               </div>
             </div>
 
@@ -1027,12 +1040,12 @@
             <div class="form-group">
               <label for="company-domain">주요 사업 분야 / 업종</label>
               <select id="company-domain">
-                <option value="it_saas">IT / SaaS / 인공지능(AI)</option>
-                <option value="fintech">핀테크 / 블록체인</option>
-                <option value="bio_health">바이오 / 헬스케어</option>
-                <option value="manufacturing">제조 / 하드웨어 / 로봇</option>
-                <option value="contents">콘텐츠 / 커머스 / 플랫폼</option>
-                <option value="other">기타 전문 서비스</option>
+                <option value="IT / SaaS / 인공지능(AI)">IT / SaaS / 인공지능(AI)</option>
+                <option value="핀테크 / 블록체인 / 금융">핀테크 / 블록체인 / 금융</option>
+                <option value="바이오 / 헬스케어 / 의료">바이오 / 헬스케어 / 의료</option>
+                <option value="제조 / 하드웨어 / 로봇 / IoT">제조 / 하드웨어 / 로봇 / IoT</option>
+                <option value="콘텐츠 / 커머스 / 플랫폼">콘텐츠 / 커머스 / 플랫폼</option>
+                <option value="기타 전문 엔지니어링 및 컨설팅">기타 전문 서비스</option>
               </select>
             </div>
 
@@ -1060,8 +1073,8 @@
         <!-- Action Bar -->
         <div class="submit-section">
           <div class="submit-info">
-            <h3>RFP 분석 및 맞춤형 가이드 생성</h3>
-            <p>AI가 제안요청서의 평가 기준을 파악하고 귀사에 최적화된 1~2페이지 요약 & 목차 가이드를 만듭니다.</p>
+            <h3>Gemini AI 맞춤 분석 & 제안서 가이드 생성</h3>
+            <p>Gemini AI가 제안요청서의 평가 기준을 파악하고 귀사에 최적화된 1~2페이지 요약 & 목차 가이드를 만듭니다.</p>
           </div>
           <button type="submit" class="btn-primary" id="btn-submit">
             <span>🚀 분석 및 가이드 생성 시작</span>
@@ -1074,35 +1087,35 @@
         <div class="progress-tracker">
           <div class="progress-step" id="step-progress-1">
             <div class="step-icon">1</div>
-            <div class="step-label">PDF 파싱 & 추출</div>
+            <div class="step-label">PDF 텍스트 파싱</div>
           </div>
           <div class="progress-step" id="step-progress-2">
             <div class="step-icon">2</div>
-            <div class="step-label">RFP 핵심 요약 생성</div>
+            <div class="step-label">Gemini RFP 핵심 분석</div>
           </div>
           <div class="progress-step" id="step-progress-3">
             <div class="step-icon">3</div>
-            <div class="step-label">기업 강점 매핑 가이드</div>
+            <div class="step-label">기업 강점 매핑 가이드 생성</div>
           </div>
           <div class="progress-step" id="step-progress-4">
             <div class="step-icon">4</div>
-            <div class="step-label">이메일 전달 완료</div>
+            <div class="step-label">분석 완료 & 저장</div>
           </div>
         </div>
 
         <!-- Output Viewers -->
         <div class="output-viewer" id="output-viewer">
           <div class="tabs-header">
-            <button type="button" class="tab-btn active" onclick="switchTab('tab-summary')">📄 1차 산출물: RFP 1~2페이지 요약</button>
-            <button type="button" class="tab-btn" onclick="switchTab('tab-guide')">🎯 2차 산출물: 맞춤형 제안서 작성 가이드</button>
+            <button type="button" class="tab-btn active" id="tab-btn-summary" onclick="switchTab('tab-summary')">📄 1차 산출물: RFP 1~2페이지 요약</button>
+            <button type="button" class="tab-btn" id="tab-btn-guide" onclick="switchTab('tab-guide')">🎯 2차 산출물: 맞춤형 제안서 작성 가이드</button>
           </div>
 
           <!-- Tab 1: RFP Summary -->
           <div class="tab-content active" id="tab-summary">
             <span class="report-badge">1~2 PAGE RFP SUMMARY REPORT</span>
             <h3 class="section-title">📌 공고 개요 및 핵심 요구사항</h3>
-            <p id="summary-overview">
-              본 사업은 중소벤처기업부 주관 <strong>2026년도 인공지능 기반 스마트 서비스 바우처 지원사업</strong>으로, 데이터 분석 및 LLM 기반 업무 자동화 솔루션 구축 역량을 보유한 공급기업을 모집합니다. 총 사업 예산은 1.5억 원(정부지원금 70%)이며, 8개월 이내에 현업 적용 가능한 상용 솔루션 납품을 목표로 합니다.
+            <p id="summary-overview" style="color: #e2e8f0; white-space: pre-line;">
+              (분석 결과가 여기에 표시됩니다.)
             </p>
 
             <h3 class="section-title">📊 평가 기준 및 배점 구조</h3>
@@ -1110,38 +1123,18 @@
               <thead>
                 <tr>
                   <th>평가 항목</th>
-                  <th>배점</th>
+                  <th style="width: 90px; text-align: center;">배점</th>
                   <th>주요 평가 착안점</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td><strong>기술성 및 개발 역량</strong></td>
-                  <td>40점</td>
-                  <td>AI/LLM 아키텍처 안정성, 데이터 보안 처리 역량, 참여 인력 전문성</td>
-                </tr>
-                <tr>
-                  <td><strong>사업성 및 실행 계획</strong></td>
-                  <td>30점</td>
-                  <td>8개월 내 마일스톤 달성 가능성, 수요기업 연계 시너지, 비용 타당성</td>
-                </tr>
-                <tr>
-                  <td><strong>수행 실적 및 조직 역량</strong></td>
-                  <td>20점</td>
-                  <td>유사 공공/민간 프로젝트 완료 실적, 지식재산권(특허/인증) 보유 현황</td>
-                </tr>
-                <tr>
-                  <td><strong>사후 관리 및 확산 계획</strong></td>
-                  <td>10점</td>
-                  <td>유지보수 SLA 체계, 향후 확장 로드맵</td>
-                </tr>
+              <tbody id="summary-criteria-body">
+                <!-- Dynamic Content -->
               </tbody>
             </table>
 
-            <h3 class="section-title">⚠️ 필수 자격 요건 & 제출 마감</h3>
-            <ul style="padding-left: 1.5rem; color: var(--text-muted);">
-              <li><strong>제출 마감일:</strong> 2026년 9월 30일(수) 18:00 (전산 접수 마감 엄수)</li>
-              <li><strong>필수 제출 서류:</strong> 사업제안서(30p 이내), 기업신용평가등급확인서, 참여인력 재직증명서</li>
+            <h3 class="section-title">⚠️ 제출 일정 및 필수 자격 요건</h3>
+            <ul id="summary-requirements-list" style="padding-left: 1.5rem; color: var(--text-muted); line-height: 1.8;">
+              <!-- Dynamic Content -->
             </ul>
           </div>
 
@@ -1150,50 +1143,26 @@
             <span class="report-badge" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald);">CUSTOM PROPOSAL DRAFTING GUIDE</span>
             
             <h3 class="section-title">🎯 귀사 맞춤형 제안서 목차 및 전략 매핑</h3>
-            <p style="color: var(--text-muted); margin-bottom: 1rem;">
-              입력하신 회사 강점(클라우드 분산 아키텍처, MSA 기반 고성능 API, 공공기관 레퍼런스 3건)을 RFP 40점 배점 항목에 집중 배치하도록 최적화된 목차를 구성했습니다.
+            <p id="guide-strategy-overview" style="color: #cbd5e1; margin-bottom: 1.25rem; line-height: 1.7;">
+              (맞춤형 전략 총평이 여기에 표시됩니다.)
             </p>
 
             <table class="matrix-table">
               <thead>
                 <tr>
-                  <th>제안서 제안 목차</th>
-                  <th>RFP 배점 매핑</th>
+                  <th style="width: 28%;">제안서 제안 목차</th>
+                  <th style="width: 18%; text-align: center;">RFP 배점 매핑</th>
                   <th>귀사 강점 소구 전략 (Action Guide)</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td><strong>I. 사업 이해 및 제안 배경</strong></td>
-                  <td>사업성 (10점)</td>
-                  <td>수요기업의 당면 과제를 정의하고, 귀사의 검증된 아키텍처 도입 시 기대효과 정량 제시</td>
-                </tr>
-                <tr>
-                  <td><strong>II. 시스템 아키텍처 및 기술 구현</strong></td>
-                  <td>기술성 (40점) ★핵심</td>
-                  <td><strong>[자사 강점]</strong> 보유 중인 MSA 고성능 API 플랫폼을 전면에 배치하여 기술 안정성 강조</td>
-                </tr>
-                <tr>
-                  <td><strong>III. 사업 수행 계획 및 일정 관리</strong></td>
-                  <td>실행력 (20점)</td>
-                  <td>8개월 개발 일정을 2주 단위 스프린트로 쪼개어 리스크 사전 통제 방안 어필</td>
-                </tr>
-                <tr>
-                  <td><strong>IV. 참여 인력 및 유사 사업 실적</strong></td>
-                  <td>조직/실적 (20점) ★핵심</td>
-                  <td><strong>[자사 강점]</strong> 10인 이상의 풀스택 핵심 인력 프로필과 공공 구축 실적 3건을 증빙 자료로 첨부</td>
-                </tr>
-                <tr>
-                  <td><strong>V. 사후 지원 및 품질 보증</strong></td>
-                  <td>사후 관리 (10점)</td>
-                  <td>무상 하자보수 1년 및 단계별 기술 이전 교육 계획 수립</td>
-                </tr>
+              <tbody id="guide-toc-body">
+                <!-- Dynamic Content -->
               </tbody>
             </table>
 
             <h3 class="section-title">💡 컨설턴트 원포인트 차별화 팁</h3>
-            <div style="background: rgba(99, 102, 241, 0.12); border-left: 4px solid var(--primary); padding: 1rem 1.25rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; color: #e2e8f0;">
-              심사위원단은 40점 배점의 기술성 항목에서 "실제 납품 후 장애 대응력"을 중요하게 봅니다. II장 시작부에 귀사의 5년 분산원장/클라우드 운영 노하우를 바탕으로 한 <strong>"무장애 SLA 가용성 다이어그램"</strong>을 도식화하여 1페이지 요약 형태로 배치하는 것을 강력히 추천합니다.
+            <div class="consultant-box" id="guide-consultant-tip">
+              (컨설턴트 차별화 조언이 여기에 표시됩니다.)
             </div>
           </div>
         </div>
@@ -1209,7 +1178,7 @@
   <!-- JavaScript Logic -->
   <script>
     // ---------------------------------------------------------
-    // 1. Supabase Initialization
+    // 1. Config (Supabase)
     // ---------------------------------------------------------
     const SUPABASE_PROJECT_URL = 'https://skoyvgyutsdwcnwqpdnl.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrb3l2Z3l1dHNkd2Nud3FwZG5sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyMzk5NjQsImV4cCI6MjEwMzgxNTk2NH0.oS3gMPFBKv-W7sUt6SDZjmYY_7gxzyTIZLKeyiC6Kdo';
@@ -1219,8 +1188,11 @@
 
     if (window.supabase) {
       supabaseClient = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_KEY);
-    } else {
-      console.error('Supabase library failed to load.');
+    }
+
+    // PDF.js Worker Configuration
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
 
     // ---------------------------------------------------------
@@ -1243,7 +1215,6 @@
 
         updateAuthUI(session ? session.user : null);
 
-        // Listen for Auth changes (OAuth redirect, logout, etc.)
         supabaseClient.auth.onAuthStateChange((_event, session) => {
           updateAuthUI(session ? session.user : null);
         });
@@ -1267,7 +1238,6 @@
       currentUser = user;
 
       if (user) {
-        // Logged In -> Show Main App, Hide Auth View
         authView.style.display = 'none';
         mainView.style.display = 'block';
         userInfoArea.style.display = 'flex';
@@ -1275,12 +1245,10 @@
         const userEmail = user.email || 'Google User';
         userEmailDisplay.textContent = userEmail;
         
-        // Auto-fill user email in Step 2 if not already typed
         if (userEmailInput && !userEmailInput.value) {
           userEmailInput.value = userEmail;
         }
 
-        // Avatar Initial or Google Image
         const avatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture;
         if (avatarUrl) {
           userAvatarDisplay.innerHTML = `<img src="${avatarUrl}" alt="Avatar" class="user-avatar" style="width:100%;height:100%;">`;
@@ -1289,14 +1257,12 @@
         }
 
       } else {
-        // Not Logged In -> Show Auth View (Google Login Card), Hide Main App
         authView.style.display = 'block';
         mainView.style.display = 'none';
         userInfoArea.style.display = 'none';
       }
     }
 
-    // Google Sign-In Trigger
     async function handleGoogleSignIn() {
       if (!supabaseClient) return;
 
@@ -1318,19 +1284,10 @@
         alert('구글 로그인 중 오류가 발생했습니다: ' + err.message);
         btn.style.opacity = '1';
         btn.style.pointerEvents = 'auto';
-        btn.innerHTML = `
-          <svg viewBox="0 0 24 24" style="width:20px;height:20px;">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-          </svg>
-          <span>Google 계정으로 계속하기</span>
-        `;
+        btn.innerHTML = '<span>Google 계정으로 계속하기</span>';
       }
     }
 
-    // Sign Out
     async function handleSignOut() {
       if (!supabaseClient) return;
       try {
@@ -1341,13 +1298,14 @@
       }
     }
 
-    // Initialize Auth on window load
     window.addEventListener('DOMContentLoaded', initAuth);
 
     // ---------------------------------------------------------
-    // 3. Workspace / Upload / Proposal Logic
+    // 3. PDF Upload & Parsing
     // ---------------------------------------------------------
     let selectedFile = null;
+    let extractedPdfText = '';
+
     const dropZone = document.getElementById('drop-zone');
     const fileInput = document.getElementById('file-input');
 
@@ -1393,17 +1351,63 @@
 
     function removeSelectedFile() {
       selectedFile = null;
+      extractedPdfText = '';
       if (fileInput) fileInput.value = '';
       document.getElementById('file-preview').classList.remove('active');
     }
 
     function fillSampleCompanyInfo() {
       document.getElementById('company-name').value = '(주)넥스트에이아이 솔루션즈';
-      document.getElementById('company-domain').value = 'it_saas';
+      document.getElementById('company-domain').value = 'IT / SaaS / 인공지능(AI)';
       document.getElementById('company-narrative').value = '당사는 5년 이상의 금융권 및 공공기관 대상 분산원장, LLM 기반 데이터 자동화 플랫폼 구축 경험을 보유한 8년차 기술 스타트업입니다. 12인의 시니어 AI/풀스택 엔지니어팀으로 구성되어 있으며, MSA 기반 고성능 API 파이프라인 개발 특허 2건 및 공공기관 스마트 정보화 사업 구축 실적 3건을 성공적으로 완수한 레퍼런스를 보유하고 있습니다.';
     }
 
-    function handleFormSubmit(event) {
+    // PDF Text Extraction using pdf.js
+    async function extractTextFromPDF(file) {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      let fullText = '';
+
+      const maxPages = Math.min(pdf.numPages, 40); // Parse up to 40 pages
+      for (let i = 1; i <= maxPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        const pageText = textContent.items.map(item => item.str).join(' ');
+        fullText += `\n--- [Page ${i}] ---\n` + pageText;
+      }
+      return fullText.trim();
+    }
+
+    // ---------------------------------------------------------
+    // 4. Gemini AI API Call (/api/analyze Serverless Endpoint)
+    // ---------------------------------------------------------
+    async function callGeminiProposalAI(rfpText, companyInfo) {
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          rfpText: rfpText.substring(0, 25000),
+          companyInfo: companyInfo
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `AI 분석 서버 오류 (${response.status})`);
+      }
+
+      const result = await response.json();
+      if (!result.success || !result.data) {
+        throw new Error(result.error || 'AI 응답 데이터를 해석할 수 없습니다.');
+      }
+
+      return result.data;
+    }
+
+    // ---------------------------------------------------------
+    // 5. Form Submit & Real Workflow
+    // ---------------------------------------------------------
+    async function handleFormSubmit(event) {
       event.preventDefault();
 
       if (!selectedFile) {
@@ -1412,10 +1416,15 @@
         return;
       }
 
+      const companyName = document.getElementById('company-name').value.trim();
+      const userEmail = document.getElementById('user-email').value.trim();
+      const companyDomain = document.getElementById('company-domain').value;
+      const companyNarrative = document.getElementById('company-narrative').value.trim();
+
       const btn = document.getElementById('btn-submit');
       const panel = document.getElementById('analysis-panel');
       btn.disabled = true;
-      btn.innerHTML = '<span>⚡ AI 분석 및 가이드 생성 중...</span>';
+      btn.innerHTML = '<span>⚡ Gemini AI 분석 진행 중...</span>';
 
       panel.style.display = 'block';
       panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1428,46 +1437,142 @@
       ];
 
       steps.forEach(s => { s.className = 'progress-step'; });
-      steps[0].classList.add('active');
 
-      setTimeout(() => {
+      try {
+        // Step 1: PDF Text Extraction
+        steps[0].classList.add('active');
+        extractedPdfText = await extractTextFromPDF(selectedFile);
         steps[0].classList.remove('active');
         steps[0].classList.add('done');
-        steps[1].classList.add('active');
-      }, 1000);
 
-      setTimeout(() => {
+        // Step 2 & 3: Gemini Analysis
+        steps[1].classList.add('active');
+        const companyInfo = {
+          name: companyName,
+          email: userEmail,
+          domain: companyDomain,
+          narrative: companyNarrative
+        };
+
+        const aiResponse = await callGeminiProposalAI(extractedPdfText, companyInfo);
+
         steps[1].classList.remove('active');
         steps[1].classList.add('done');
         steps[2].classList.add('active');
-      }, 2200);
 
-      setTimeout(() => {
+        // Render AI Results to DOM
+        renderAnalysisResults(aiResponse);
+
         steps[2].classList.remove('active');
         steps[2].classList.add('done');
         steps[3].classList.add('active');
-      }, 3400);
 
-      setTimeout(() => {
+        // Save to Supabase DB (rfp_analyses) if user is logged in
+        if (supabaseClient && currentUser) {
+          try {
+            await supabaseClient.from('rfp_analyses').insert({
+              user_id: currentUser.id,
+              file_name: selectedFile.name,
+              file_size: selectedFile.size,
+              company_name: companyName,
+              user_email: userEmail,
+              company_domain: companyDomain,
+              company_narrative: companyNarrative,
+              parsed_text: extractedPdfText.substring(0, 10000),
+              summary_report: aiResponse.summaryReport,
+              proposal_guide: aiResponse.proposalGuide,
+              status: 'completed'
+            });
+          } catch (dbErr) {
+            console.warn('Supabase DB Insert note:', dbErr);
+          }
+        }
+
         steps[3].classList.remove('active');
         steps[3].classList.add('done');
-        
-        btn.disabled = false;
-        btn.innerHTML = '<span>✅ 분석 완료 (이메일 발송됨)</span>';
 
+        btn.disabled = false;
+        btn.innerHTML = '<span>✅ Gemini 분석 완료!</span>';
         document.getElementById('output-viewer').classList.add('ready');
-      }, 4500);
+
+      } catch (err) {
+        console.error('Analysis Process Error:', err);
+        alert('분석 처리 중 오류가 발생했습니다:\n' + err.message);
+        btn.disabled = false;
+        btn.innerHTML = '<span>🚀 다시 분석 시도</span>';
+      }
     }
 
+    // Render Gemini Results into UI
+    function renderAnalysisResults(data) {
+      const summary = data.summaryReport || {};
+      const guide = data.proposalGuide || {};
+
+      // 1. Summary Tab
+      document.getElementById('summary-overview').innerHTML = `
+        <strong>[${summary.projectTitle || '사업명'}]</strong><br>
+        ${summary.overview || ''}<br><br>
+        <strong>💰 예산 및 기간:</strong> ${summary.budgetAndPeriod || '미기재'}
+      `;
+
+      // Criteria Table
+      const criteriaBody = document.getElementById('summary-criteria-body');
+      criteriaBody.innerHTML = '';
+      if (Array.isArray(summary.evaluationCriteria)) {
+        summary.evaluationCriteria.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>${item.category}</strong></td>
+            <td style="text-align: center; color: var(--accent-cyan); font-weight: 700;">${item.score}</td>
+            <td>${item.keyPoints}</td>
+          `;
+          criteriaBody.appendChild(tr);
+        });
+      }
+
+      // Deadlines List
+      const reqList = document.getElementById('summary-requirements-list');
+      reqList.innerHTML = '';
+      if (Array.isArray(summary.deadlinesAndRequirements)) {
+        summary.deadlinesAndRequirements.forEach(r => {
+          const li = document.createElement('li');
+          li.textContent = r;
+          reqList.appendChild(li);
+        });
+      }
+
+      // 2. Guide Tab
+      document.getElementById('guide-strategy-overview').textContent = guide.strategyOverview || '';
+
+      const tocBody = document.getElementById('guide-toc-body');
+      tocBody.innerHTML = '';
+      if (Array.isArray(guide.tableOfContents)) {
+        guide.tableOfContents.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>${item.section}</strong></td>
+            <td style="text-align: center; color: var(--accent-emerald); font-weight: 600;">${item.mappingScore}</td>
+            <td>${item.actionStrategy}</td>
+          `;
+          tocBody.appendChild(tr);
+        });
+      }
+
+      document.getElementById('guide-consultant-tip').textContent = guide.consultantTip || '';
+    }
+
+    // Output Tabs
     function switchTab(tabId) {
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById('tab-btn-summary').classList.remove('active');
+      document.getElementById('tab-btn-guide').classList.remove('active');
+      document.getElementById('tab-summary').classList.remove('active');
+      document.getElementById('tab-guide').classList.remove('active');
 
       if (tabId === 'tab-summary') {
-        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.getElementById('tab-btn-summary').classList.add('active');
         document.getElementById('tab-summary').classList.add('active');
       } else {
-        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.getElementById('tab-btn-guide').classList.add('active');
         document.getElementById('tab-guide').classList.add('active');
       }
     }
