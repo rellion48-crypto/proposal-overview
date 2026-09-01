@@ -2,7 +2,9 @@
 
 > **프로젝트명**: RFP 맞춤형 목차 & 1~2페이지 요약 설계 서비스  
 > **최종 목표**: RFP PDF를 분석하여 요약 보고서 + 제안서 작성 가이드를 자동 생성, 이메일로 전달  
-> **주 고객**: 지원사업/입찰에 도전하는 초기 스타트업 대표
+> **주 고객**: 지원사업/입찰에 도전하는 초기 스타트업 대표  
+> **배포 URL (Vercel)**: https://proposal-overview-ruby.vercel.app/  
+> **GitHub 레포지토리**: https://github.com/rellion48-crypto/proposal-overview.git  
 
 ---
 

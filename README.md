@@ -1,6 +1,8 @@
 # 📋 Proposal-overview (RFP 맞춤형 요약 & 제안서 작성 가이드 서비스)
 
 > **지원사업 및 공공/민간 입찰에 도전하는 초기 스타트업 대표를 위한 AI 기반 RFP 분석 및 맞춤형 제안서 작성 지원 솔루션**
+>
+> 🌐 **Live Demo (Vercel)**: [https://proposal-overview-ruby.vercel.app/](https://proposal-overview-ruby.vercel.app/)
 
 ---
 

@@ -10,6 +10,7 @@
 - [x] .gitignore 및 .env.example 기본 셋업 — 2026-09-01
 - [x] README.md 작성 및 GitHub 원격 저장소 연동 (첫 커밋) — 2026-09-01
 - [x] 기본 메인화면 index.html 생성 (Hello World) — 2026-09-01
+- [x] Vercel 배포 환경 연동 및 URL 등록 — 2026-09-01
 
 ---
 
@@ -45,5 +46,6 @@
 ## 📝 메모 (Notes)
 
 - GitHub 원격 저장소: `https://github.com/rellion48-crypto/proposal-overview.git`
+- **Vercel 배포 주소**: `https://proposal-overview-ruby.vercel.app/`
 - **커밋 메시지 규칙**: 모든 커밋 메시지는 **한국어**로 작성할 것.
 - 기본 `index.html` 파일 작성 완료. 향후 프레임워크(Next.js 등) 전환 여부 검토 가능.
