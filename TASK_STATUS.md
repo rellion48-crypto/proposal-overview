@@ -35,7 +35,9 @@
 
 ## 🐛 이슈 & 블로커 (Issues)
 
-- (없음)
+- **[해결 가이드] Google OAuth 400 에러 (`redirect_uri_mismatch`)**
+  - **원인**: Google Cloud Console의 OAuth 클라이언트 ID 설정에 Supabase 콜백 URL(`https://skoyvgyutsdwcnwqpdnl.supabase.co/auth/v1/callback`)이 미등록됨.
+  - **조치**: Google Cloud Console > 사용자 인증 정보 > 클라이언트 ID에서 '승인된 리디렉션 URI' 및 '승인된 자바스크립트 원본' 추가 필요.
 
 ---
 
