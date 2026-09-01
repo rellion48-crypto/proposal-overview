@@ -13,6 +13,7 @@
 - [x] Vercel 배포 환경 연동 및 URL 등록 — 2026-09-01
 - [x] 메인 인터페이스 index.html 구현 (RFP PDF 업로드존 + 회사 정보 및 문장형 역량 입력 폼 + 실시간 분석 프로그레스 + 1·2차 산출물 뷰어) — 2026-09-01
 - [x] Supabase Google OAuth 연동 & 구글 로그인 시에만 메인 페이지 접근 가능하도록 인증 게이트웨이 구현 (미로그인 시 구글 로그인/회원가입 카드 표출) — 2026-09-01
+- [x] Supabase 데이터베이스 (profiles, rfp_analyses) 및 Storage (rfp-documents) SQL 스키마 설계 및 파일 구성 — 2026-09-01
 
 ---
 
@@ -26,7 +27,7 @@
 
 - [ ] **[Phase 1]** Next.js / API 백엔드 환경 및 프로젝트 셋업
 - [ ] **[Phase 2]** 실제 PDF 업로드 & 파싱 모듈 개발 (`pdf-parse`)
-- [ ] **[Phase 2]** OpenAI / Claude AI API 연동 (1차 요약 프롬프트 적용)
+- [ ] **[Phase 2]** Gemini AI API (`GEMINI_API_KEY`) 연동 (1차 요약 프롬프트 적용)
 - [ ] **[Phase 2]** 프롬프트 엔지니어링 (rfp-summary, proposal-guide)
 - [ ] **[Phase 3]** 제안서 작성 가이드 생성 로직 & 이메일 발송 연동 (Resend)
 
